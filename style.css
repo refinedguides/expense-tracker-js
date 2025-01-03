@@ -13,25 +13,21 @@
 }
 
 body {
-  padding: 2rem;
   font-family: "Poppins", sans-serif;
   background-color: var(--bg-color);
   color: var(--text-color);
-}
-
-h1 {
-  text-align: center;
-  font-size: 1.5rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 h3,
-header,
-ul {
+header {
   margin-bottom: 0.5rem;
 }
 
 main {
-  max-width: 400px;
+  width: min(420px, 90%);
   margin: 1rem auto;
   background-color: #fff;
   padding: 1rem;
@@ -73,7 +69,7 @@ header h5 {
 form {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 5px;
 }
 
 form input:not(#type),
@@ -101,6 +97,7 @@ form label {
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
+  display: block;
 }
 
 form div:nth-child(-n + 2) {
@@ -121,19 +118,19 @@ input#type {
   align-items: center;
   justify-content: center;
   padding: 10px;
-  background: #eee;
+  background-color: indianred;
   border-radius: 5px;
   position: relative;
-}
-
-.option span {
-  width: 50%;
-  text-align: center;
+  transition: background-color 0.25s;
   cursor: pointer;
-  z-index: 2;
+  color: #fff;
 }
 
 .option::before {
+  content: "Expense";
+}
+
+.option::after {
   content: "";
   position: absolute;
   top: 5px;
@@ -144,15 +141,40 @@ input#type {
   transform: translateX(5px);
   border-radius: inherit;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
-  transition: all 200ms;
+  transition: left 200ms;
 }
 
-input#type:checked ~ .option::before {
+.option::before,
+.option span {
+  width: 50%;
+  text-align: center;
+  cursor: inherit;
+  z-index: 2;
+}
+
+input#type:checked ~ .option::after {
   left: 50%;
+}
+
+input#type:checked ~ .option {
+  background-color: yellowgreen;
+}
+
+input#type:checked ~ .option span,
+input#type:not(:checked) ~ .option::before {
+  color: #1d1f27;
+}
+
+input[type="date"] {
+  appearance: none;
+  background-color: #fff;
+  color: #1d1f27;
+  text-align: start;
 }
 
 ul {
   list-style-type: none;
+  margin-bottom: 0.5rem;
 }
 
 ul li {
@@ -207,6 +229,7 @@ ul li:hover {
   transform: scaleX(0);
   transform-origin: right;
   transition: all 300ms;
+  cursor: pointer;
 }
 
 ul li:hover .action {
@@ -216,10 +239,25 @@ ul li:hover .action {
 .action svg {
   width: 36px;
   height: 36px;
-  cursor: pointer;
 }
 
 #status {
   text-align: center;
   margin-bottom: 0.5rem;
+  border: 2px dashed #ddd;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 160px;
+  overflow-y: auto;
+}
+
+#transactionList:not(:empty) {
+  height: 160px;
+  overflow-y: auto;
+}
+
+#transactionList:not(:empty) + #status {
+  display: none;
 }

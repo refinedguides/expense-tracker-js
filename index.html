@@ -6,10 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Expense Tracker</title>
     <link rel="stylesheet" href="style.css" />
+    <!-- social links for refinedguides.com -->
+    <script
+      src="https://refinedguides.com/assets/social.js?linkColor=%233a3dbe&textColor=%23333"
+      defer
+    ></script>
   </head>
   <body>
-    <h1>Expense Tracker</h1>
-
     <main>
       <header>
         <div>
@@ -38,9 +41,8 @@
         <form id="transactionForm">
           <div>
             <label for="type">
-              <input type="checkbox" name="type" id="type" />
+              <input type="checkbox" name="type" id="type" checked />
               <div class="option">
-                <span>Expense</span>
                 <span>Income</span>
               </div>
             </label>
@@ -55,8 +57,9 @@
               type="number"
               name="amount"
               value="0"
-              min="0.01"
-              step="0.01"
+              min="0"
+              step="any"
+              inputmode="decimal"
               required
             />
           </div>
