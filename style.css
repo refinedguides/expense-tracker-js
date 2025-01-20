@@ -67,9 +67,9 @@ header h5 {
 }
 
 form {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
 }
 
 form input:not(#type),
@@ -91,6 +91,7 @@ form button {
   font-weight: 600;
   text-transform: uppercase;
   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+  grid-column: span 2;
 }
 
 form label {
@@ -101,7 +102,7 @@ form label {
 }
 
 form div:nth-child(-n + 2) {
-  flex-basis: 100%;
+  grid-column: span 2;
 }
 
 form div:nth-child(n + 3) {
@@ -118,7 +119,7 @@ input#type {
   align-items: center;
   justify-content: center;
   padding: 10px;
-  background-color: indianred;
+  background-color: yellowgreen;
   border-radius: 5px;
   position: relative;
   transition: background-color 0.25s;
@@ -127,7 +128,7 @@ input#type {
 }
 
 .option::before {
-  content: "Expense";
+  content: attr(data-option);
 }
 
 .option::after {
@@ -157,7 +158,7 @@ input#type:checked ~ .option::after {
 }
 
 input#type:checked ~ .option {
-  background-color: yellowgreen;
+  background-color: indianred;
 }
 
 input#type:checked ~ .option span,
@@ -175,18 +176,34 @@ input[type="date"] {
 ul {
   list-style-type: none;
   margin-bottom: 0.5rem;
+  height: 200px;
+  overflow-y: auto;
+}
+
+ul:empty {
+  border: 2px dashed #ddd;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+ul:empty::before {
+  content: attr(data-placeholder);
 }
 
 ul li {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  padding: 5px 10px;
+  margin-block: 5px;
+  padding-inline: 10px;
   position: relative;
 }
 
 ul li:hover {
-  background: rgba(0, 0, 0, 0.1);
+  background: #f6f8fa;
+  cursor: pointer;
 }
 
 .name {
@@ -214,50 +231,4 @@ ul li:hover {
 
 .amount.expense {
   color: indianred;
-}
-
-.action {
-  position: absolute;
-  top: 0;
-  right: 0;
-  background-color: #f00;
-  color: #fff;
-  height: 100%;
-  width: 50px;
-  display: grid;
-  place-items: center;
-  transform: scaleX(0);
-  transform-origin: right;
-  transition: all 300ms;
-  cursor: pointer;
-}
-
-ul li:hover .action {
-  transform: scaleX(1);
-}
-
-.action svg {
-  width: 36px;
-  height: 36px;
-}
-
-#status {
-  text-align: center;
-  margin-bottom: 0.5rem;
-  border: 2px dashed #ddd;
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 160px;
-  overflow-y: auto;
-}
-
-#transactionList:not(:empty) {
-  height: 160px;
-  overflow-y: auto;
-}
-
-#transactionList:not(:empty) + #status {
-  display: none;
 }

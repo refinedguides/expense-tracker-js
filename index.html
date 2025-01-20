@@ -31,8 +31,7 @@
 
       <section>
         <h3>Transactions</h3>
-        <ul id="transactionList"></ul>
-        <div id="status"></div>
+        <ul id="transactionList" data-placeholder="No transactions."></ul>
       </section>
 
       <section>
@@ -42,14 +41,14 @@
           <div>
             <label for="type">
               <input type="checkbox" name="type" id="type" checked />
-              <div class="option">
-                <span>Income</span>
+              <div class="option" data-option="Income">
+                <span>Expense</span>
               </div>
             </label>
           </div>
           <div>
             <label for="name">Name</label>
-            <input type="text" name="name" required />
+            <input type="text" name="name" id="name" required />
           </div>
           <div>
             <label for="amount">Amount</label>
@@ -60,12 +59,14 @@
               min="0"
               step="any"
               inputmode="decimal"
+              id="amount"
               required
+              onfocus="this.select()"
             />
           </div>
           <div>
             <label for="date">Date</label>
-            <input type="date" name="date" required />
+            <input type="date" name="date" id="date" required />
           </div>
           <button type="submit">Submit</button>
         </form>

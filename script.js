@@ -8,10 +8,12 @@ const formatter = new Intl.NumberFormat("en-US", {
 
 const list = document.getElementById("transactionList");
 const form = document.getElementById("transactionForm");
-const statusText = document.getElementById("status");
 const balance = document.getElementById("balance");
 const income = document.getElementById("income");
 const expense = document.getElementById("expense");
+const dateInput = document.getElementById("date");
+
+dateInput.defaultValue = new Date().toISOString().split("T")[0];
 
 form.addEventListener("submit", addTransaction);
 
@@ -20,6 +22,32 @@ function formatCurrency(value) {
     return formatter.format(0).replace(/^[+-]/, "");
   }
   return formatter.format(value);
+}
+
+function createItem({ id, name, amount, date, type }) {
+  const sign = "income" === type ? 1 : -1;
+
+  const li = document.createElement("li");
+
+  li.innerHTML = `
+      <div class="name">
+        <h4>${name}</h4>
+        <p>${new Date(date).toLocaleDateString()}</p>
+      </div>
+
+      <div class="amount ${type}">
+        <span>${formatCurrency(amount * sign)}</span>
+      </div>
+    `;
+
+  li.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (confirm("Delete transaction?")) {
+      deleteTransaction(id);
+    }
+  });
+
+  return li;
 }
 
 function updateTotal() {
@@ -41,34 +69,8 @@ function updateTotal() {
 function renderList() {
   list.innerHTML = "";
 
-  statusText.textContent = "";
-  if (transactions.length === 0) {
-    statusText.textContent = "No transactions.";
-    return;
-  }
-
-  transactions.forEach(({ id, name, amount, date, type }) => {
-    const sign = "income" === type ? 1 : -1;
-
-    const li = document.createElement("li");
-
-    li.innerHTML = `
-      <div class="name">
-        <h4>${name}</h4>
-        <p>${new Date(date).toLocaleDateString()}</p>
-      </div>
-
-      <div class="amount ${type}">
-        <span>${formatCurrency(amount * sign)}</span>
-      </div>
-
-      <div class="action" onclick="deleteTransaction(${id})">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      </div>
-    `;
-
+  transactions.forEach((transaction) => {
+    const li = createItem(transaction);
     list.appendChild(li);
   });
 }
@@ -80,29 +82,51 @@ function deleteTransaction(id) {
   const index = transactions.findIndex((trx) => trx.id === id);
   transactions.splice(index, 1);
 
+  list.removeChild(list.children[index]);
+
   updateTotal();
   saveTransactions();
-  renderList();
 }
 
 function addTransaction(e) {
   e.preventDefault();
 
-  const formData = new FormData(this);
+  const formData = new FormData(form);
+  form.reset();
 
-  transactions.push({
-    id: transactions.length + 1,
+  const uniqueId =
+    Date.now().toString(36) + Math.random().toString(36).substring(2);
+
+  const newTransaction = {
+    id: uniqueId,
     name: formData.get("name"),
     amount: parseFloat(formData.get("amount")),
     date: new Date(formData.get("date")),
-    type: "on" === formData.get("type") ? "income" : "expense",
-  });
+    type: "on" === formData.get("type") ? "expense" : "income",
+  };
 
-  this.reset();
+  if (
+    !newTransaction.name ||
+    isNaN(newTransaction.amount) ||
+    !newTransaction.date
+  ) {
+    alert("Please fill in all fields correctly.");
+    return;
+  }
+
+  transactions.push(newTransaction);
+  saveTransactions();
+
+  const index = transactions.findIndex((trx) => trx.id === uniqueId);
+  const newListItem = createItem(newTransaction);
+  if (index === 0) {
+    list.prepend(newListItem);
+  } else {
+    const previousListItem = list.children[index - 1];
+    previousListItem.insertAdjacentElement("afterend", newListItem);
+  }
 
   updateTotal();
-  saveTransactions();
-  renderList();
 }
 
 function saveTransactions() {
